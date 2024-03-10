@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat_Websocket</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="favicon.png">
+    <!-- Style.css, Dans le HTML car en public n'est pas pris en compte dans un fichier séparé-->
+    <style>
+        /* Reset des marges, paddings et boîte de modèle pour tout le document */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Style de police de base pour le corps du document */
+        body {
+            font-size: 30px;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* Style pour la div principale contenant le chat */
+        .div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            /* La div occupe la largeur totale du parent */
+            height: 100vh;
+            /* La div occupe toute la hauteur de la vue */
+            margin: 0 auto;
+            /* Centrer horizontalement la div */
+        }
+
+        /* Style pour le conteneur du champ de texte et du bouton */
+        .input-container {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Style pour le champ de texte */
+        #m {
+            margin-right: 10px;
+            /* Ajoute une marge à droite du champ de texte pour l'espace */
+        }
+
+        /* Style commun pour le bouton et le champ de texte */
+        .button,
+        #m {
+            align-self: center;
+            background-color: #fff;
+            background-image: none;
+            background-position: 0 90%;
+            background-repeat: repeat no-repeat;
+            background-size: 4px 3px;
+            border-radius: 15px 225px 255px 15px 15px 255px 225px 15px;
+            border-style: solid;
+            border-width: 2px;
+            box-shadow: rgba(0, 0, 0, .2) 15px 28px 25px -18px;
+            box-sizing: border-box;
+            color: #41403e;
+            cursor: pointer;
+            display: inline-block;
+            font-family: Neucha, sans-serif;
+            font-size: 1rem;
+            line-height: 23px;
+            outline: none;
+            padding: .75rem;
+            text-decoration: none;
+            transition: all 235ms ease-in-out;
+            border-bottom-left-radius: 15px 255px;
+            border-bottom-right-radius: 225px 15px;
+            border-top-left-radius: 255px 15px;
+            border-top-right-radius: 15px 225px;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        /* Style au survol du bouton et du champ de texte */
+        .button:hover,
+        #m:hover {
+            box-shadow: rgba(0, 0, 0, .3) 2px 8px 8px -5px;
+            transform: translate3d(0, 2px, 0);
+        }
+
+        /* Style au focus du bouton et du champ de texte */
+        .button:focus,
+        #m:focus {
+            box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <script src='/socket.io/socket.io.js'></script>
+    <script>
+        // Initialisation de la connexion WebSocket
+        var socket = io('http://localhost:3000');
+
+        // Fonction pour envoyer un message au serveur
+        var send = function () {
+            var text = document.getElementById('m').value;
+            socket.emit('chat message', text);
+        }
+
+        // Fonction pour recevoir un message du serveur et l'afficher
+        var receive = function (msg) {
+            var li = document.createElement('li');
+            li.innerText = msg;
+            document.getElementById('messages').appendChild(li);
+        }
+
+        // Écoute des messages du serveur et appel de la fonction receive
+        socket.on('chat message', receive);
+    </script>
+
+    <!-- Contenu principal de la page -->
+    <div class="div">
+        <!-- Liste pour afficher les messages -->
+        <ul id="messages"></ul>
+        <!-- Conteneur du champ de texte et du bouton -->
+        <div class="input-container">
+            <!-- Champ de texte pour saisir le message -->
+            <input id="m" type="text">
+            <!-- Bouton pour envoyer le message -->
+            <button onclick="send()" class="button" role="button">Send</button>
+        </div>
+    </div>
+
+</body>
+
+</html>
+
+<!-- Index.html -->
